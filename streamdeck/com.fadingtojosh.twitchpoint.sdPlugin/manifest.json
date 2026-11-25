@@ -1,0 +1,132 @@
+{
+	"Name": "Twitchpoint",
+	"Version": "0.1.0.0",
+	"Author": "FadingToJosh",
+	"Actions": [
+		{
+			"Name": "Watching",
+			"UUID": "com.fadingtojosh.twitchpoint.watching",
+			"Icon": "imgs/actions/icon",
+			"Tooltip": "Channel Twitchpoint is watching right now. Press to refresh.",
+			"PropertyInspectorPath": "ui/settings.html",
+			"Controllers": [
+				"Keypad"
+			],
+			"DisableAutomaticStates": true,
+			"States": [
+				{
+					"Image": "imgs/actions/key",
+					"ShowTitle": false
+				}
+			]
+		},
+		{
+			"Name": "Drop Progress",
+			"UUID": "com.fadingtojosh.twitchpoint.drop-progress",
+			"Icon": "imgs/actions/icon",
+			"Tooltip": "Minutes on the drop being farmed, e.g. 56/120. Press to refresh.",
+			"PropertyInspectorPath": "ui/settings.html",
+			"Controllers": [
+				"Keypad"
+			],
+			"DisableAutomaticStates": true,
+			"States": [
+				{
+					"Image": "imgs/actions/key",
+					"ShowTitle": false
+				}
+			]
+		},
+		{
+			"Name": "Drop Position",
+			"UUID": "com.fadingtojosh.twitchpoint.drop-position",
+			"Icon": "imgs/actions/icon",
+			"Tooltip": "Which drop of the campaign this is, e.g. 4/5. Press to refresh.",
+			"PropertyInspectorPath": "ui/settings.html",
+			"Controllers": [
+				"Keypad"
+			],
+			"DisableAutomaticStates": true,
+			"States": [
+				{
+					"Image": "imgs/actions/key",
+					"ShowTitle": false
+				}
+			]
+		},
+		{
+			"Name": "Next Drop",
+			"UUID": "com.fadingtojosh.twitchpoint.next-drop",
+			"Icon": "imgs/actions/icon",
+			"Tooltip": "The drop you get after the current one. Press to refresh.",
+			"PropertyInspectorPath": "ui/settings.html",
+			"Controllers": [
+				"Keypad"
+			],
+			"DisableAutomaticStates": true,
+			"States": [
+				{
+					"Image": "imgs/actions/key",
+					"ShowTitle": false
+				}
+			]
+		},
+		{
+			"Name": "Campaign ETA",
+			"UUID": "com.fadingtojosh.twitchpoint.campaign-eta",
+			"Icon": "imgs/actions/icon",
+			"Tooltip": "Watch time until every drop in the campaign is earned. Press to refresh.",
+			"PropertyInspectorPath": "ui/settings.html",
+			"Controllers": [
+				"Keypad"
+			],
+			"DisableAutomaticStates": true,
+			"States": [
+				{
+					"Image": "imgs/actions/key",
+					"ShowTitle": false
+				}
+			]
+		},
+		{
+			"Name": "Next Game",
+			"UUID": "com.fadingtojosh.twitchpoint.next-game",
+			"Icon": "imgs/actions/icon",
+			"Tooltip": "Next game in your priority list that Twitchpoint will farm. Press to refresh.",
+			"PropertyInspectorPath": "ui/settings.html",
+			"Controllers": [
+				"Keypad"
+			],
+			"DisableAutomaticStates": true,
+			"States": [
+				{
+					"Image": "imgs/actions/key",
+					"ShowTitle": false
+				}
+			]
+		}
+	],
+	"Category": "Twitchpoint",
+	"CategoryIcon": "imgs/plugin/category",
+	"CodePath": "bin/plugin.js",
+	"Description": "Shows Twitchpoint drop progress, ETA and priority queue on your Stream Deck.",
+	"Icon": "imgs/plugin/marketplace",
+	"SDKVersion": 3,
+	"Software": {
+		"MinimumVersion": "7.1"
+	},
+	"OS": [
+		{
+			"Platform": "mac",
+			"MinimumVersion": "12"
+		},
+		{
+			"Platform": "windows",
+			"MinimumVersion": "10"
+		}
+	],
+	"Nodejs": {
+		"Version": "24"
+	},
+	"UUID": "com.fadingtojosh.twitchpoint"
+}

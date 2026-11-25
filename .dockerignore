@@ -25,3 +25,6 @@ debug.log
 Dockerfile
 docker-compose.yml
 .dockerignore
+
+# Stream Deck plugin (built and run on the desktop, not in the server image)
+streamdeck/

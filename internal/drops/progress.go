@@ -242,6 +242,7 @@ func (s *Service) ApplyProgressUpdate(data twitch.DropProgressData) {
 		// If the cached row already targets a different drop, swap to the new one.
 		if data.DropID != "" && resolvedName != "" {
 			s.activeDrops[i].DropName = resolvedName
+			s.activeDrops[i].DropID = data.DropID
 		}
 		if resolvedRequired > 0 {
 			s.activeDrops[i].Required = resolvedRequired
