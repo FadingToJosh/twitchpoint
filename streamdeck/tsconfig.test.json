@@ -7,5 +7,5 @@
 		"outDir": ".test-out",
 		"rootDir": "."
 	},
-	"include": ["src/model.ts", "src/format.ts", "src/render.ts", "src/faces.ts", "test/**/*.ts"]
+	"include": ["src/model.ts", "src/format.ts", "src/render.ts", "src/faces.ts", "src/poller.ts", "test/**/*.ts"]
 }

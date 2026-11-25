@@ -1,7 +1,8 @@
 # Twitchpoint for Stream Deck
 
-Six keys that show what your Twitchpoint instance is doing, refreshed every 60 s
-(configurable, 15–300 s). Pressing any of them refreshes immediately.
+Six keys that show what your Twitchpoint instance is doing. They refresh every
+60 s while a drop is being farmed and every 5 min while nothing is targeted
+(both configurable). Pressing any of them refreshes immediately.
 
 | Key | Shows | Example |
 | --- | --- | --- |

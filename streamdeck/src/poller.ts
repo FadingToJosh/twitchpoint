@@ -2,7 +2,10 @@ import { summaryFromLegacy, type ChannelRow, type DropRow, type Summary } from "
 
 export type PollerSettings = {
 	baseUrl: string;
+	/** Poll interval while a drop is being farmed. */
 	intervalSec: number;
+	/** Poll interval while nothing is targeted (no active drop, or offline). */
+	idleIntervalSec: number;
 };
 
 export type PollState =
@@ -13,6 +16,7 @@ export type PollState =
 export const DEFAULT_SETTINGS: PollerSettings = {
 	baseUrl: "http://192.168.68.76:8080",
 	intervalSec: 60,
+	idleIntervalSec: 300,
 };
 
 const TIMEOUT_MS = 5000;
@@ -62,6 +66,19 @@ function describe(err: unknown): string {
 }
 
 /**
+ * Fast while a drop is being farmed, slow otherwise. Failures use the fast
+ * interval while we still hold data from an active drop, so a short outage
+ * mid-campaign recovers quickly. Never slower than the fast interval, even if
+ * the two settings are entered backwards.
+ */
+export function nextDelaySec(state: PollState, s: PollerSettings): number {
+	const fast = s.intervalSec;
+	const slow = Math.max(s.idleIntervalSec, fast);
+	const summary = state.kind === "ok" ? state.summary : state.kind === "error" ? state.last : undefined;
+	return summary?.drop ? fast : slow;
+}
+
+/**
  * One shared poller for every key: N keys on the deck cost one request per
  * interval, not N.
  */
@@ -76,11 +93,16 @@ export class Poller {
 	constructor(private readonly onUpdate: (state: PollState) => void) {}
 
 	configure(partial: Partial<PollerSettings>): void {
+		const sec = (v: unknown, fallback: number) => Math.max(15, Number(v) || fallback);
 		const next: PollerSettings = {
 			baseUrl: normalizeBaseUrl(partial.baseUrl ?? this.settings.baseUrl),
-			intervalSec: Math.max(15, Number(partial.intervalSec) || this.settings.intervalSec || DEFAULT_SETTINGS.intervalSec),
+			intervalSec: sec(partial.intervalSec, this.settings.intervalSec),
+			idleIntervalSec: sec(partial.idleIntervalSec, this.settings.idleIntervalSec),
 		};
-		const changed = next.baseUrl !== this.settings.baseUrl || next.intervalSec !== this.settings.intervalSec;
+		const changed =
+			next.baseUrl !== this.settings.baseUrl ||
+			next.intervalSec !== this.settings.intervalSec ||
+			next.idleIntervalSec !== this.settings.idleIntervalSec;
 		this.settings = next;
 		if (changed && this.timer) {
 			this.failures = 0;
@@ -134,6 +156,6 @@ export class Poller {
 			})();
 		}
 		await this.inFlight;
-		this.schedule(this.settings.intervalSec * 1000);
+		this.schedule(nextDelaySec(this.state, this.settings) * 1000);
 	}
 }

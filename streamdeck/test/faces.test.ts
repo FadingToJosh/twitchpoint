@@ -77,3 +77,13 @@ test("wrap and render", () => {
 	assert.match(svg, /56\/120/);
 	assert.doesNotMatch(renderKey({ label: "x", value: "<b>&" }), /<b>/);
 });
+
+test("polls fast while farming, slow while idle", async () => {
+	const { nextDelaySec, DEFAULT_SETTINGS } = await import("../src/poller.js");
+	const idle = { ...summary, drop: null };
+	assert.equal(nextDelaySec({ kind: "ok", summary, at: new Date() }, DEFAULT_SETTINGS), 60);
+	assert.equal(nextDelaySec({ kind: "ok", summary: idle, at: new Date() }, DEFAULT_SETTINGS), 300);
+	assert.equal(nextDelaySec({ kind: "error", message: "x", last: summary }, DEFAULT_SETTINGS), 60);
+	assert.equal(nextDelaySec({ kind: "error", message: "x" }, DEFAULT_SETTINGS), 300);
+	assert.equal(nextDelaySec({ kind: "ok", summary: idle, at: new Date() }, { ...DEFAULT_SETTINGS, idleIntervalSec: 30 }), 60);
+});
