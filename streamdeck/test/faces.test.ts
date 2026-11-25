@@ -111,3 +111,14 @@ test("next game only lists games with a real campaign", () => {
 	assert.equal(s.next_game?.game, "Rust");
 	assert.equal(faceFor("next-game", s).sub, "nobody live · #4");
 });
+
+test("intervals are clamped to their documented ranges", async () => {
+	const { clampSec, LIMITS } = await import("../src/poller.js");
+	assert.equal(clampSec(5, LIMITS.intervalSec, 60), 15);
+	assert.equal(clampSec("999", LIMITS.intervalSec, 60), 300);
+	assert.equal(clampSec("90.6", LIMITS.intervalSec, 60), 91);
+	assert.equal(clampSec("abc", LIMITS.intervalSec, 60), 60);
+	assert.equal(clampSec(undefined, LIMITS.idleIntervalSec, 300), 300);
+	assert.equal(clampSec(10, LIMITS.idleIntervalSec, 300), 60);
+	assert.equal(clampSec(5000, LIMITS.idleIntervalSec, 300), 1800);
+});

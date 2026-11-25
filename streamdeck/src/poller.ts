@@ -19,10 +19,23 @@ export const DEFAULT_SETTINGS: PollerSettings = {
 	idleIntervalSec: 300,
 };
 
+/** Accepted ranges in seconds. Keep in sync with ui/settings.html. */
+export const LIMITS = {
+	intervalSec: { min: 15, max: 300 },
+	idleIntervalSec: { min: 60, max: 1800 },
+} as const;
+
 const TIMEOUT_MS = 5000;
 // Keep showing the last good data through brief blips (Pi busy, Wi-Fi hiccup)
 // instead of flashing "Offline" on every missed poll.
 const FAILURES_BEFORE_ERROR = 3;
+
+/** Rounds and clamps a user-entered interval; non-numbers keep the fallback. */
+export function clampSec(v: unknown, range: { min: number; max: number }, fallback: number): number {
+	const n = Math.round(Number(v));
+	if (v === undefined || v === null || v === "" || !Number.isFinite(n)) return fallback;
+	return Math.min(range.max, Math.max(range.min, n));
+}
 
 function normalizeBaseUrl(u: string): string {
 	let s = (u || "").trim();
@@ -93,11 +106,10 @@ export class Poller {
 	constructor(private readonly onUpdate: (state: PollState) => void) {}
 
 	configure(partial: Partial<PollerSettings>): void {
-		const sec = (v: unknown, fallback: number) => Math.max(15, Number(v) || fallback);
 		const next: PollerSettings = {
 			baseUrl: normalizeBaseUrl(partial.baseUrl ?? this.settings.baseUrl),
-			intervalSec: sec(partial.intervalSec, this.settings.intervalSec),
-			idleIntervalSec: sec(partial.idleIntervalSec, this.settings.idleIntervalSec),
+			intervalSec: clampSec(partial.intervalSec, LIMITS.intervalSec, this.settings.intervalSec),
+			idleIntervalSec: clampSec(partial.idleIntervalSec, LIMITS.idleIntervalSec, this.settings.idleIntervalSec),
 		};
 		const changed =
 			next.baseUrl !== this.settings.baseUrl ||
