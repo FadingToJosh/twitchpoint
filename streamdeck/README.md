@@ -31,15 +31,17 @@ npx streamdeck link com.fadingtojosh.twitchpoint.sdPlugin   # dev install
 ```
 
 Then drag the keys from the **Twitchpoint** category onto your deck. Set the
-server URL once in any key's settings (default `http://192.168.68.76:8080`);
-it's shared by all keys.
+server URL once in any key's settings; it's shared by all keys. The default,
+`http://127.0.0.1:8080`, is right when Twitchpoint runs on the same PC. If it
+runs on another machine (a Pi, a NAS), enter that machine's LAN address, e.g.
+`http://192.168.1.50:8080`.
 
 ## Server requirements
 
-* Twitchpoint has to be reachable from the PC running Stream Deck, which
-  means `"web_bind": "0.0.0.0"` in `config.json` (the default is
-  `127.0.0.1`, also inside Docker). If you can open the dashboard from your
-  PC's browser, this is already done.
+* Same PC: nothing to do, the default `web_bind` (`127.0.0.1`) works.
+* Another machine: set `"web_bind": "0.0.0.0"` in that machine's
+  `config.json` (the default is localhost-only, also inside Docker). If you can
+  open the dashboard from your PC's browser, this is already done.
 * `/api/streamdeck` only exists in builds from this fork. Against an older
   build the plugin falls back to `/api/drops` + `/api/channels`, but then
   **Next Drop shows `n/a`** and **Campaign ETA only covers the current
