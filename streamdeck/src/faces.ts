@@ -67,9 +67,10 @@ export function faceFor(field: Field, s: Summary, now: Date = new Date()): KeyFa
 		}
 		case "next-game": {
 			const g = s.next_game;
-			if (!g) return { label, value: "None", sub: "queue empty", tone: "muted" };
-			const sub = g.source === "queue" ? (g.rank ? `queued · #${g.rank}` : "queued") : `priority #${g.rank}`;
-			return { label, value: g.game, sub, tone: g.source === "queue" ? "normal" : "muted" };
+			if (!g) return { label, value: "No other campaigns", tone: "muted" };
+			const rank = g.rank ? ` · #${g.rank}` : "";
+			if (g.source === "queue") return { label, value: g.game, sub: `queued${rank}` };
+			return { label, value: g.game, sub: `nobody live${rank}`, tone: "muted" };
 		}
 	}
 }

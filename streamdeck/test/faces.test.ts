@@ -96,3 +96,18 @@ test("single long words shrink instead of being split", async () => {
 	assert.match(svg, />Soulframe</);
 	assert.match(renderKey({ label: "x", value: "Tom Clancy's Rainbow Six Siege X" }), />Tom Clancy&apos;s</);
 });
+
+test("next game only lists games with a real campaign", () => {
+	const row = (game: string, status: string, block_reason?: string) => ({
+		campaign_name: game, game_name: game, drop_name: "", channel_login: "", progress: 0, required: 0,
+		percent: 0, end_at: "2026-11-29T00:00:00Z", status, block_reason, eta_minutes: 0,
+	});
+	const wanted = ["Soulframe", "Hearthstone", "Apex", "Rust"];
+	const active = { ...row("Hearthstone", "ACTIVE"), progress: 14, required: 60 };
+	let s = summaryFromLegacy([active], [], wanted);
+	assert.equal(s.next_game, null);
+	assert.equal(faceFor("next-game", s).value, "No other campaigns");
+	s = summaryFromLegacy([active, row("Apex", "BLOCKED", "account not linked"), row("Rust", "IDLE")], [], wanted);
+	assert.equal(s.next_game?.game, "Rust");
+	assert.equal(faceFor("next-game", s).sub, "nobody live · #4");
+});

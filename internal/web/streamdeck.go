@@ -67,9 +67,9 @@ type StreamDeckDrop struct {
 type StreamDeckGame struct {
 	Game     string `json:"game"`
 	Campaign string `json:"campaign,omitempty"`
-	// Source is "queue" when a queued campaign with a live channel exists
-	// (this is what the farmer will switch to), or "wanted_games" when we
-	// only know the next name in your priority list.
+	// Source is "queue" when a channel is live for the campaign (this is
+	// what the farmer will switch to), or "offline" when the campaign is
+	// running but nobody is streaming it right now.
 	Source string `json:"source"`
 	Rank   int    `json:"rank"` // 1-based position in wanted_games, 0 if not listed
 }
@@ -183,52 +183,44 @@ func buildStreamDeckSummary(
 		sum.Drop = d
 	}
 
-	// Next game: best-ranked QUEUED campaign of a different game, using the
-	// selector's order (wanted_games rank, then earliest end).
+	// Next game: best-ranked campaign of a different game, using the
+	// selector's order (wanted_games rank, then earliest end). QUEUED
+	// campaigns (a channel is live, the farmer can switch now) win over IDLE
+	// ones (campaign exists but nobody is streaming it). Games with no
+	// campaign at all are never shown, and neither are BLOCKED rows or IDLE
+	// rows that have a BlockReason (everything claimed, filtered, ...).
 	curGame := ""
 	if active != nil {
 		curGame = norm(active.GameName)
 	}
-	var best *drops.ActiveDrop
-	better := func(a, b *drops.ActiveDrop) bool {
-		ra, rb := rankOf(a.GameName), rankOf(b.GameName)
-		if ra == 0 {
-			ra = len(wanted) + 1
+	rankOrLast := func(g string) int {
+		if r := rankOf(g); r > 0 {
+			return r
 		}
-		if rb == 0 {
-			rb = len(wanted) + 1
-		}
-		if ra != rb {
-			return ra < rb
-		}
-		return a.EndAt.Before(b.EndAt)
+		return len(wanted) + 1
 	}
-	for i := range rows {
-		r := &rows[i]
-		if r.Status != "QUEUED" || norm(r.GameName) == curGame {
-			continue
-		}
-		if best == nil || better(r, best) {
-			best = r
-		}
-	}
-	if best != nil {
-		sum.NextGame = &StreamDeckGame{Game: best.GameName, Campaign: best.CampaignName, Source: "queue", Rank: rankOf(best.GameName)}
-	} else if len(wanted) > 0 {
-		// Nothing farmable is queued: fall back to the next name in the
-		// priority list after the current game (or the top of the list).
-		start := 0
-		if r := rankOf(curGame); r > 0 {
-			start = r
-		}
-		for i := 0; i < len(wanted); i++ {
-			g := wanted[(start+i)%len(wanted)]
-			if norm(g) == curGame {
+	pickBest := func(status string) *drops.ActiveDrop {
+		var best *drops.ActiveDrop
+		for i := range rows {
+			r := &rows[i]
+			if r.Status != status || r.BlockReason != "" || norm(r.GameName) == curGame {
 				continue
 			}
-			sum.NextGame = &StreamDeckGame{Game: g, Source: "wanted_games", Rank: rankOf(g)}
-			break
+			if best == nil {
+				best = r
+				continue
+			}
+			ra, rb := rankOrLast(r.GameName), rankOrLast(best.GameName)
+			if ra < rb || (ra == rb && r.EndAt.Before(best.EndAt)) {
+				best = r
+			}
 		}
+		return best
+	}
+	if best := pickBest("QUEUED"); best != nil {
+		sum.NextGame = &StreamDeckGame{Game: best.GameName, Campaign: best.CampaignName, Source: "queue", Rank: rankOf(best.GameName)}
+	} else if best := pickBest("IDLE"); best != nil {
+		sum.NextGame = &StreamDeckGame{Game: best.GameName, Campaign: best.CampaignName, Source: "offline", Rank: rankOf(best.GameName)}
 	}
 	return sum
 }

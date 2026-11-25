@@ -11,7 +11,7 @@ Six keys that show what your Twitchpoint instance is doing. They refresh every
 | **Drop Position** | Which watch-time drop of the campaign this is | `4/5` |
 | **Next Drop** | The drop after this one and its progress | `Weapon Skin` / 56/240m |
 | **Campaign ETA** | Watch time until every reachable drop is earned, and the local clock time | `3h 04m` / ≈ 10:47 PM |
-| **Next Game** | Next game the farmer will switch to (queued campaign, ranked by your wanted-games order) | `Marvel Rivals` / queued · #2 |
+| **Next Game** | Next game with a running campaign, ranked by your wanted-games order. A live channel ("queued") beats a campaign nobody is streaming ("nobody live"). Games with no campaign are never shown. | `Marvel Rivals` / queued · #2 |
 
 All keys share one HTTP request per interval against `GET /api/streamdeck`.
 

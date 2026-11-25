@@ -46,7 +46,8 @@ export type Summary = {
 	next_game: {
 		game: string;
 		campaign?: string;
-		source: "queue" | "wanted_games";
+		/** queue = a channel is live, farmer can switch now; offline = campaign running, nobody streaming. */
+		source: "queue" | "offline";
 		rank: number;
 	} | null;
 };
@@ -62,6 +63,7 @@ export type DropRow = {
 	percent: number;
 	end_at: string;
 	status: string;
+	block_reason?: string;
 	eta_minutes: number;
 	claimed_drops?: number;
 	watchable_drops?: number;
@@ -114,24 +116,22 @@ export function summaryFromLegacy(rows: DropRow[], channels: ChannelRow[], wante
 		};
 	}
 
+	// Only games with a real campaign: QUEUED (someone is live) beats IDLE
+	// (campaign exists, nobody streaming). Rows with a block_reason (account
+	// not linked, everything claimed, filtered) are skipped.
 	const curGame = active ? norm(active.game_name) : "";
 	const rankOrLast = (g: string) => rankOf(g) || wanted.length + 1;
-	const queued = rows
-		.filter((r) => r.status === "QUEUED" && norm(r.game_name) !== curGame)
-		.sort((a, b) => rankOrLast(a.game_name) - rankOrLast(b.game_name) || Date.parse(a.end_at) - Date.parse(b.end_at));
+	const pickBest = (status: string) =>
+		rows
+			.filter((r) => r.status === status && !r.block_reason && norm(r.game_name) !== curGame)
+			.sort((a, b) => rankOrLast(a.game_name) - rankOrLast(b.game_name) || Date.parse(a.end_at) - Date.parse(b.end_at))[0];
 
 	let nextGame: Summary["next_game"] = null;
-	if (queued.length > 0) {
-		const q = queued[0];
-		nextGame = { game: q.game_name, campaign: q.campaign_name, source: "queue", rank: rankOf(q.game_name) };
-	} else if (wanted.length > 0) {
-		const start = rankOf(curGame);
-		for (let i = 0; i < wanted.length; i++) {
-			const g = wanted[(start + i) % wanted.length];
-			if (norm(g) === curGame) continue;
-			nextGame = { game: g, source: "wanted_games", rank: rankOf(g) };
-			break;
-		}
+	const queued = pickBest("QUEUED");
+	const waiting = queued ? undefined : pickBest("IDLE");
+	const best = queued ?? waiting;
+	if (best) {
+		nextGame = { game: best.game_name, campaign: best.campaign_name, source: queued ? "queue" : "offline", rank: rankOf(best.game_name) };
 	}
 
 	return {

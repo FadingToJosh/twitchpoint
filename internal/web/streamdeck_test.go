@@ -64,13 +64,34 @@ func TestBuildStreamDeckSummary(t *testing.T) {
 	}
 }
 
+func TestBuildStreamDeckSummaryNextGameOnlyRealCampaigns(t *testing.T) {
+	none := func(string) (twitch.DropCampaign, bool) { return twitch.DropCampaign{}, false }
+	wanted := []string{"Soulframe", "Hearthstone", "Apex", "Rust"}
+	active := drops.ActiveDrop{CampaignID: "h", GameName: "Hearthstone", Status: "ACTIVE"}
+
+	// Soulframe is #1 but has no campaign at all: never shown.
+	s := buildStreamDeckSummary([]drops.ActiveDrop{active}, nil, wanted, none, time.Now())
+	if s.NextGame != nil {
+		t.Fatalf("next_game = %+v, want nil when no other campaign exists", s.NextGame)
+	}
+
+	// A campaign exists but nobody is live: shown as offline. Blocked and
+	// fully-claimed ones are skipped.
+	rows := []drops.ActiveDrop{active,
+		{GameName: "Apex", Status: "BLOCKED", BlockReason: "account not linked"},
+		{GameName: "Apex", Status: "IDLE", BlockReason: "nothing open"},
+		{GameName: "Rust", CampaignName: "Rust S3", Status: "IDLE"},
+	}
+	s = buildStreamDeckSummary(rows, nil, wanted, none, time.Now())
+	if s.NextGame == nil || s.NextGame.Game != "Rust" || s.NextGame.Source != "offline" || s.NextGame.Rank != 4 {
+		t.Fatalf("next_game = %+v, want Rust offline rank 4", s.NextGame)
+	}
+}
+
 func TestBuildStreamDeckSummaryIdle(t *testing.T) {
 	none := func(string) (twitch.DropCampaign, bool) { return twitch.DropCampaign{}, false }
 	s := buildStreamDeckSummary(nil, nil, []string{"Rust", "Apex"}, none, time.Now())
-	if s.Watching != nil || s.Drop != nil {
+	if s.Watching != nil || s.Drop != nil || s.NextGame != nil {
 		t.Fatalf("expected empty summary, got %+v", s)
-	}
-	if s.NextGame == nil || s.NextGame.Game != "Rust" || s.NextGame.Source != "wanted_games" {
-		t.Fatalf("next_game = %+v, want Rust from wanted_games", s.NextGame)
 	}
 }
