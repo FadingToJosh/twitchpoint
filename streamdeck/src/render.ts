@@ -69,23 +69,62 @@ export function wrap(text: string, maxChars: number, maxLines: number): string[]
 	return out;
 }
 
-/** Picks the biggest font size whose wrap fits the whole text, else the smallest. */
-function layoutValue(value: string, bandHeight: number): { size: number; lines: string[] } {
-	// Conservative average glyph width for bold sans (caps run wide): ~0.66em.
-	const charsAt = (size: number) => Math.max(1, Math.floor((SIZE - 14) / (size * 0.66)));
-	const options = [
-		{ size: 40, lines: 1 },
-		{ size: 32, lines: 1 },
-		{ size: 26, lines: 2 },
-		{ size: 21, lines: 3 },
-		{ size: 17, lines: 4 },
-	].filter((o) => o.lines * o.size * 1.1 <= bandHeight);
-	for (const o of options) {
-		const lines = wrap(value, charsAt(o.size), o.lines);
-		if (!lines.some((l) => l.endsWith("…"))) return { size: o.size, lines };
+/** Rough per-glyph advance for bold Arial/Helvetica, in em. Good enough to pick a size. */
+function glyphEm(ch: string): number {
+	if (ch === " ") return 0.28;
+	if ("ijl.,:;'|!I".includes(ch)) return 0.28;
+	if ("frt()-/1".includes(ch)) return 0.37;
+	if ("mwMW".includes(ch)) return 0.88;
+	if (/[0-9]/.test(ch)) return 0.56;
+	if (/[A-Z]/.test(ch)) return 0.72;
+	if (/[a-z]/.test(ch)) return 0.58;
+	return 0.7; // symbols, accented and CJK: err wide
+}
+
+export function textWidth(text: string, size: number): number {
+	let em = 0;
+	for (const ch of text) em += glyphEm(ch);
+	return em * size;
+}
+
+/**
+ * Word wrap by measured width. Returns null if any single word is wider than
+ * the line or the text needs more than `maxLines` lines, so the caller can try
+ * a smaller size instead of chopping a word in half.
+ */
+export function wrapWords(text: string, size: number, maxWidth: number, maxLines: number): string[] | null {
+	const words = text.trim().split(/\s+/).filter(Boolean);
+	const lines: string[] = [];
+	let cur = "";
+	for (const w of words) {
+		if (textWidth(w, size) > maxWidth) return null;
+		const next = cur ? `${cur} ${w}` : w;
+		if (textWidth(next, size) <= maxWidth) {
+			cur = next;
+		} else {
+			lines.push(cur);
+			cur = w;
+		}
 	}
-	const last = options[options.length - 1];
-	return { size: last.size, lines: wrap(value, charsAt(last.size), last.lines) };
+	if (cur) lines.push(cur);
+	return lines.length <= maxLines ? lines : null;
+}
+
+const MAX_TEXT_WIDTH = SIZE - 14;
+// Smallest size still readable on a 72px key from arm's length. Below this we
+// truncate with an ellipsis rather than shrink further.
+const MIN_SIZE = 18;
+
+/** Biggest font size at which the whole value fits without splitting a word. */
+function layoutValue(value: string, bandHeight: number): { size: number; lines: string[] } {
+	for (const size of [40, 34, 30, 26, 23, 20, MIN_SIZE]) {
+		const maxLines = Math.min(4, Math.floor(bandHeight / (size * 1.1)));
+		const lines = wrapWords(value, size, MAX_TEXT_WIDTH, maxLines);
+		if (lines) return { size, lines };
+	}
+	const maxLines = Math.floor(bandHeight / (MIN_SIZE * 1.1));
+	const maxChars = Math.floor(MAX_TEXT_WIDTH / (MIN_SIZE * 0.62));
+	return { size: MIN_SIZE, lines: wrap(value, maxChars, maxLines) };
 }
 
 export function renderKey(face: KeyFace): string {

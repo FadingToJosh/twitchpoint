@@ -87,3 +87,12 @@ test("polls fast while farming, slow while idle", async () => {
 	assert.equal(nextDelaySec({ kind: "error", message: "x" }, DEFAULT_SETTINGS), 300);
 	assert.equal(nextDelaySec({ kind: "ok", summary: idle, at: new Date() }, { ...DEFAULT_SETTINGS, idleIntervalSec: 30 }), 60);
 });
+
+test("single long words shrink instead of being split", async () => {
+	const { wrapWords } = await import("../src/render.js");
+	assert.equal(wrapWords("Soulframe", 32, 130, 1), null); // too wide at 32px
+	assert.deepEqual(wrapWords("Soulframe", 26, 130, 1), ["Soulframe"]);
+	const svg = renderKey({ label: "Next game", value: "Soulframe" });
+	assert.match(svg, />Soulframe</);
+	assert.match(renderKey({ label: "x", value: "Tom Clancy's Rainbow Six Siege X" }), />Tom Clancy&apos;s</);
+});
