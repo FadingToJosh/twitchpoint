@@ -66,6 +66,7 @@ func (s *Server) setupRoutes() {
 	s.mux.HandleFunc("/api/wanted_games", s.handleWantedGames)
 	s.mux.HandleFunc("/api/games/search", s.handleGamesSearch)
 	s.mux.HandleFunc("/api/settings", s.handleSettings)
+	s.mux.HandleFunc("/api/streamdeck", s.handleStreamDeck) // local: Stream Deck plugin
 
 	// Static files (embedded)
 	staticFS, _ := fs.Sub(staticFiles, "static")

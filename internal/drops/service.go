@@ -156,6 +156,15 @@ func (s *Service) CampaignEndAt(campaignID string) time.Time {
 	return s.campaignCache[campaignID].EndAt
 }
 
+// Campaign returns the cached campaign (with per-drop data) for the given
+// ID from the most recent drops cycle.
+func (s *Service) Campaign(campaignID string) (twitch.DropCampaign, bool) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	c, ok := s.campaignCache[campaignID]
+	return c, ok
+}
+
 // ActiveDropsCount returns the length of the ACTIVE+DISABLED+COMPLETED
 // row slice. Used by farmer's GetStats for the dashboard counter; if
 // callers need the actual rows they should use GetActiveDrops.

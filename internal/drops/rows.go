@@ -15,6 +15,9 @@ type ActiveDrop struct {
 	CampaignName       string    `json:"campaign_name"`
 	GameName           string    `json:"game_name"`
 	DropName           string    `json:"drop_name"`
+	// DropID is the drop DropName/Progress/Required describe. Lets callers
+	// line the live websocket progress up with the cached campaign. (local)
+	DropID             string    `json:"drop_id,omitempty"`
 	ChannelLogin       string    `json:"channel_login"`        // matched channel (if any)
 	Progress           int       `json:"progress"`             // current minutes watched
 	Required           int       `json:"required"`             // minutes required
@@ -213,7 +216,7 @@ func BuildRows(
 // Status / QueueIndex / ChannelLogin are filled in by BuildRows after
 // it decides the row's bucket.
 func campaignToRow(c twitch.DropCampaign, pinnedID string) ActiveDrop {
-	var dropName string
+	var dropName, dropID string
 	var progress, required int
 	for _, d := range c.Drops {
 		if d.RequiredMinutesWatched <= 0 || d.IsClaimed {
@@ -223,6 +226,7 @@ func campaignToRow(c twitch.DropCampaign, pinnedID string) ActiveDrop {
 		if dropName == "" {
 			dropName = d.Name
 		}
+		dropID = d.ID
 		progress = d.CurrentMinutesWatched
 		required = d.RequiredMinutesWatched
 		break
@@ -235,6 +239,7 @@ func campaignToRow(c twitch.DropCampaign, pinnedID string) ActiveDrop {
 		CampaignName:       c.Name,
 		GameName:           c.GameName,
 		DropName:           dropName,
+		DropID:             dropID,
 		Progress:           progress,
 		Required:           required,
 		EndAt:              c.EndAt,

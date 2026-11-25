@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/miwi/twitchpoint/internal/drops"
+	"github.com/miwi/twitchpoint/internal/twitch"
 )
 
 // SetCampaignEnabled enables or disables a drop campaign and triggers an
@@ -28,6 +29,11 @@ func (f *Farmer) SetCampaignEnabled(campaignID string, enabled bool) error {
 // surface used by the web /api/drops endpoint and the TUI.
 func (f *Farmer) GetActiveDrops() []drops.ActiveDrop {
 	return f.drops.GetActiveDrops()
+}
+
+// GetCampaign returns the cached campaign with its per-drop data.
+func (f *Farmer) GetCampaign(campaignID string) (twitch.DropCampaign, bool) {
+	return f.drops.Campaign(campaignID)
 }
 
 // GetClaimHistory returns the received-drops history ("Received") — every
