@@ -12,9 +12,9 @@ export function formatMinutes(min: number): string {
 }
 
 /** Local wall-clock time `min` minutes after `now`, e.g. "22:35" or "Thu 09:10". */
-export function formatFinishClock(min: number, now: Date = new Date()): string {
+export function formatFinishClock(min: number, now: Date = new Date(), locale?: string): string {
 	const t = new Date(now.getTime() + min * 60_000);
-	const hhmm = t.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+	const hhmm = t.toLocaleTimeString(locale ?? [], { hour: "2-digit", minute: "2-digit" });
 	const sameDay = t.toDateString() === now.toDateString();
-	return sameDay ? hhmm : `${t.toLocaleDateString([], { weekday: "short" })} ${hhmm}`;
+	return sameDay ? hhmm : `${t.toLocaleDateString(locale ?? [], { weekday: "short" })} ${hhmm}`;
 }

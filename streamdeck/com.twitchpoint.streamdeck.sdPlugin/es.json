@@ -1,0 +1,28 @@
+{
+	"Name": "Twitchpoint",
+	"Description": "Muestra el progreso de drops de Twitchpoint, el tiempo restante y la cola de prioridad en tu Stream Deck.",
+	"com.twitchpoint.streamdeck.watching": {
+		"Name": "Viendo",
+		"Tooltip": "Canal que Twitchpoint está viendo ahora. Pulsa para actualizar."
+	},
+	"com.twitchpoint.streamdeck.drop-progress": {
+		"Name": "Progreso del drop",
+		"Tooltip": "Minutos del drop actual, p. ej. 56/120. Pulsa para actualizar."
+	},
+	"com.twitchpoint.streamdeck.drop-position": {
+		"Name": "Posición del drop",
+		"Tooltip": "Qué drop de la campaña es, p. ej. 4/5. Pulsa para actualizar."
+	},
+	"com.twitchpoint.streamdeck.next-drop": {
+		"Name": "Siguiente drop",
+		"Tooltip": "El drop que obtienes después del actual. Pulsa para actualizar."
+	},
+	"com.twitchpoint.streamdeck.campaign-eta": {
+		"Name": "Fin de campaña",
+		"Tooltip": "Tiempo de visualización hasta conseguir todos los drops de la campaña. Pulsa para actualizar."
+	},
+	"com.twitchpoint.streamdeck.next-game": {
+		"Name": "Siguiente juego",
+		"Tooltip": "Siguiente juego con una campaña activa, según tu prioridad. Pulsa para actualizar."
+	}
+}

@@ -1,0 +1,226 @@
+{
+	"en": {
+		"Description": "Shows Twitchpoint drop progress, ETA and priority queue on your Stream Deck.",
+		"Refresh": "Press to refresh.",
+		"watching": [
+			"Watching",
+			"Channel Twitchpoint is watching right now."
+		],
+		"drop-progress": [
+			"Drop Progress",
+			"Minutes on the drop being farmed, e.g. 56/120."
+		],
+		"drop-position": [
+			"Drop Position",
+			"Which drop of the campaign this is, e.g. 4/5."
+		],
+		"next-drop": [
+			"Next Drop",
+			"The drop you get after the current one."
+		],
+		"campaign-eta": [
+			"Campaign ETA",
+			"Watch time until every drop in the campaign is earned."
+		],
+		"next-game": [
+			"Next Game",
+			"Next game with a running campaign, in your priority order."
+		]
+	},
+	"de": {
+		"Description": "Zeigt Drop-Fortschritt, Restzeit und Prioritäten von Twitchpoint auf deinem Stream Deck.",
+		"Refresh": "Drücken zum Aktualisieren.",
+		"watching": [
+			"Kanal",
+			"Kanal, den Twitchpoint gerade schaut."
+		],
+		"drop-progress": [
+			"Drop-Fortschritt",
+			"Minuten des aktuellen Drops, z. B. 56/120."
+		],
+		"drop-position": [
+			"Drop-Position",
+			"Der wievielte Drop der Kampagne das ist, z. B. 4/5."
+		],
+		"next-drop": [
+			"Nächster Drop",
+			"Der Drop nach dem aktuellen."
+		],
+		"campaign-eta": [
+			"Kampagnen-Restzeit",
+			"Zuschauzeit, bis alle Drops der Kampagne erhalten sind."
+		],
+		"next-game": [
+			"Nächstes Spiel",
+			"Nächstes Spiel mit laufender Kampagne, nach deiner Priorität."
+		]
+	},
+	"fr": {
+		"Description": "Affiche la progression des drops Twitchpoint, le temps restant et la file de priorité sur votre Stream Deck.",
+		"Refresh": "Appuyez pour actualiser.",
+		"watching": [
+			"Chaîne regardée",
+			"Chaîne que Twitchpoint regarde en ce moment."
+		],
+		"drop-progress": [
+			"Progression du drop",
+			"Minutes du drop en cours, ex. 56/120."
+		],
+		"drop-position": [
+			"Position du drop",
+			"Numéro du drop dans la campagne, ex. 4/5."
+		],
+		"next-drop": [
+			"Drop suivant",
+			"Le drop obtenu après celui en cours."
+		],
+		"campaign-eta": [
+			"Fin de campagne",
+			"Temps de visionnage restant pour obtenir tous les drops de la campagne."
+		],
+		"next-game": [
+			"Jeu suivant",
+			"Prochain jeu avec une campagne active, selon votre ordre de priorité."
+		]
+	},
+	"es": {
+		"Description": "Muestra el progreso de drops de Twitchpoint, el tiempo restante y la cola de prioridad en tu Stream Deck.",
+		"Refresh": "Pulsa para actualizar.",
+		"watching": [
+			"Viendo",
+			"Canal que Twitchpoint está viendo ahora."
+		],
+		"drop-progress": [
+			"Progreso del drop",
+			"Minutos del drop actual, p. ej. 56/120."
+		],
+		"drop-position": [
+			"Posición del drop",
+			"Qué drop de la campaña es, p. ej. 4/5."
+		],
+		"next-drop": [
+			"Siguiente drop",
+			"El drop que obtienes después del actual."
+		],
+		"campaign-eta": [
+			"Fin de campaña",
+			"Tiempo de visualización hasta conseguir todos los drops de la campaña."
+		],
+		"next-game": [
+			"Siguiente juego",
+			"Siguiente juego con una campaña activa, según tu prioridad."
+		]
+	},
+	"ja": {
+		"Description": "Twitchpointのドロップ進捗、残り時間、優先キューをStream Deckに表示します。",
+		"Refresh": "押すと更新します。",
+		"watching": [
+			"視聴中",
+			"Twitchpointが現在視聴しているチャンネル。"
+		],
+		"drop-progress": [
+			"ドロップ進捗",
+			"現在のドロップの視聴分数(例: 56/120)。"
+		],
+		"drop-position": [
+			"ドロップ順番",
+			"キャンペーン内で何番目のドロップか(例: 4/5)。"
+		],
+		"next-drop": [
+			"次のドロップ",
+			"現在のドロップの次にもらえるドロップ。"
+		],
+		"campaign-eta": [
+			"キャンペーン残り時間",
+			"キャンペーンの全ドロップを獲得するまでの視聴時間。"
+		],
+		"next-game": [
+			"次のゲーム",
+			"優先順位に基づく、実施中キャンペーンがある次のゲーム。"
+		]
+	},
+	"ko": {
+		"Description": "Twitchpoint 드롭 진행 상황, 남은 시간, 우선순위 대기열을 Stream Deck에 표시합니다.",
+		"Refresh": "누르면 새로고침합니다.",
+		"watching": [
+			"시청 중",
+			"Twitchpoint가 지금 시청 중인 채널."
+		],
+		"drop-progress": [
+			"드롭 진행",
+			"현재 드롭의 시청 시간(분), 예: 56/120."
+		],
+		"drop-position": [
+			"드롭 순서",
+			"캠페인에서 몇 번째 드롭인지, 예: 4/5."
+		],
+		"next-drop": [
+			"다음 드롭",
+			"현재 드롭 다음에 받을 드롭."
+		],
+		"campaign-eta": [
+			"캠페인 남은 시간",
+			"캠페인의 모든 드롭을 받을 때까지 필요한 시청 시간."
+		],
+		"next-game": [
+			"다음 게임",
+			"우선순위에 따른, 진행 중인 캠페인이 있는 다음 게임."
+		]
+	},
+	"zh_CN": {
+		"Description": "在 Stream Deck 上显示 Twitchpoint 的掉宝进度、剩余时间和优先队列。",
+		"Refresh": "按下即可刷新。",
+		"watching": [
+			"观看中",
+			"Twitchpoint 当前正在观看的频道。"
+		],
+		"drop-progress": [
+			"掉宝进度",
+			"当前掉宝的观看分钟数,例如 56/120。"
+		],
+		"drop-position": [
+			"掉宝序号",
+			"这是活动中的第几个掉宝,例如 4/5。"
+		],
+		"next-drop": [
+			"下一个掉宝",
+			"当前掉宝之后将获得的掉宝。"
+		],
+		"campaign-eta": [
+			"活动剩余时间",
+			"获得活动全部掉宝还需的观看时间。"
+		],
+		"next-game": [
+			"下一个游戏",
+			"按你的优先顺序,下一个有进行中活动的游戏。"
+		]
+	},
+	"zh_TW": {
+		"Description": "在 Stream Deck 上顯示 Twitchpoint 的掉寶進度、剩餘時間和優先佇列。",
+		"Refresh": "按下即可重新整理。",
+		"watching": [
+			"觀看中",
+			"Twitchpoint 目前正在觀看的頻道。"
+		],
+		"drop-progress": [
+			"掉寶進度",
+			"目前掉寶的觀看分鐘數,例如 56/120。"
+		],
+		"drop-position": [
+			"掉寶序號",
+			"這是活動中的第幾個掉寶,例如 4/5。"
+		],
+		"next-drop": [
+			"下一個掉寶",
+			"目前掉寶之後會獲得的掉寶。"
+		],
+		"campaign-eta": [
+			"活動剩餘時間",
+			"獲得活動全部掉寶還需要的觀看時間。"
+		],
+		"next-game": [
+			"下一個遊戲",
+			"依你的優先順序,下一個有進行中活動的遊戲。"
+		]
+	}
+}

@@ -1,0 +1,28 @@
+{
+	"Name": "Twitchpoint",
+	"Description": "Twitchpointのドロップ進捗、残り時間、優先キューをStream Deckに表示します。",
+	"com.twitchpoint.streamdeck.watching": {
+		"Name": "視聴中",
+		"Tooltip": "Twitchpointが現在視聴しているチャンネル。 押すと更新します。"
+	},
+	"com.twitchpoint.streamdeck.drop-progress": {
+		"Name": "ドロップ進捗",
+		"Tooltip": "現在のドロップの視聴分数(例: 56/120)。 押すと更新します。"
+	},
+	"com.twitchpoint.streamdeck.drop-position": {
+		"Name": "ドロップ順番",
+		"Tooltip": "キャンペーン内で何番目のドロップか(例: 4/5)。 押すと更新します。"
+	},
+	"com.twitchpoint.streamdeck.next-drop": {
+		"Name": "次のドロップ",
+		"Tooltip": "現在のドロップの次にもらえるドロップ。 押すと更新します。"
+	},
+	"com.twitchpoint.streamdeck.campaign-eta": {
+		"Name": "キャンペーン残り時間",
+		"Tooltip": "キャンペーンの全ドロップを獲得するまでの視聴時間。 押すと更新します。"
+	},
+	"com.twitchpoint.streamdeck.next-game": {
+		"Name": "次のゲーム",
+		"Tooltip": "優先順位に基づく、実施中キャンペーンがある次のゲーム。 押すと更新します。"
+	}
+}

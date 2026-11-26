@@ -78,7 +78,8 @@ function glyphEm(ch: string): number {
 	if (/[0-9]/.test(ch)) return 0.56;
 	if (/[A-Z]/.test(ch)) return 0.72;
 	if (/[a-z]/.test(ch)) return 0.58;
-	return 0.7; // symbols, accented and CJK: err wide
+	if (ch.codePointAt(0)! >= 0x2e80) return 1.0; // CJK / kana / hangul: full width
+	return 0.7; // symbols and accented letters: err wide
 }
 
 export function textWidth(text: string, size: number): number {
@@ -87,27 +88,75 @@ export function textWidth(text: string, size: number): number {
 	return em * size;
 }
 
+const isWide = (ch: string) => ch.codePointAt(0)! >= 0x2e80;
+
+/**
+ * Splits text into breakable tokens. Latin words break at spaces; CJK text
+ * has no spaces, so every wide character is its own token and lines may break
+ * between any two of them. `space` says whether a space precedes the token.
+ */
+function tokenize(text: string): { text: string; space: boolean }[] {
+	const out: { text: string; space: boolean }[] = [];
+	for (const word of text.trim().split(/\s+/).filter(Boolean)) {
+		let buf = "";
+		let first = true;
+		const push = (t: string) => {
+			out.push({ text: t, space: first && out.length > 0 });
+			first = false;
+		};
+		for (const ch of word) {
+			if (isWide(ch)) {
+				if (buf) push(buf);
+				buf = "";
+				push(ch);
+			} else {
+				buf += ch;
+			}
+		}
+		if (buf) push(buf);
+	}
+	return out;
+}
+
 /**
  * Word wrap by measured width. Returns null if any single word is wider than
  * the line or the text needs more than `maxLines` lines, so the caller can try
  * a smaller size instead of chopping a word in half.
  */
 export function wrapWords(text: string, size: number, maxWidth: number, maxLines: number): string[] | null {
-	const words = text.trim().split(/\s+/).filter(Boolean);
 	const lines: string[] = [];
 	let cur = "";
-	for (const w of words) {
-		if (textWidth(w, size) > maxWidth) return null;
-		const next = cur ? `${cur} ${w}` : w;
+	for (const tok of tokenize(text)) {
+		if (textWidth(tok.text, size) > maxWidth) return null;
+		const next = cur ? `${cur}${tok.space ? " " : ""}${tok.text}` : tok.text;
 		if (textWidth(next, size) <= maxWidth) {
 			cur = next;
 		} else {
 			lines.push(cur);
-			cur = w;
+			cur = tok.text;
 		}
 	}
 	if (cur) lines.push(cur);
 	return lines.length <= maxLines ? lines : null;
+}
+
+/** Last resort: hard-cut by width and end with an ellipsis. */
+function cutToWidth(text: string, size: number, maxWidth: number, maxLines: number): string[] {
+	const lines: string[] = [];
+	let cur = "";
+	for (const ch of text.trim()) {
+		if (textWidth(cur + ch, size) > maxWidth) {
+			lines.push(cur.trimEnd());
+			cur = ch.trim();
+			if (lines.length === maxLines) break;
+		} else {
+			cur += ch;
+		}
+	}
+	if (lines.length < maxLines && cur) return [...lines, cur];
+	const last = lines[maxLines - 1] ?? "";
+	lines[maxLines - 1] = (textWidth(last + "…", size) > maxWidth ? [...last].slice(0, -1).join("") : last) + "…";
+	return lines.slice(0, maxLines);
 }
 
 const MAX_TEXT_WIDTH = SIZE - 14;
@@ -122,9 +171,22 @@ function layoutValue(value: string, bandHeight: number): { size: number; lines: 
 		const lines = wrapWords(value, size, MAX_TEXT_WIDTH, maxLines);
 		if (lines) return { size, lines };
 	}
-	const maxLines = Math.floor(bandHeight / (MIN_SIZE * 1.1));
-	const maxChars = Math.floor(MAX_TEXT_WIDTH / (MIN_SIZE * 0.62));
-	return { size: MIN_SIZE, lines: wrap(value, maxChars, maxLines) };
+	const maxLines = Math.min(4, Math.floor(bandHeight / (MIN_SIZE * 1.1)));
+	return { size: MIN_SIZE, lines: cutToWidth(value, MIN_SIZE, MAX_TEXT_WIDTH, maxLines) };
+}
+
+/** Header line: shrinks (and drops letter-spacing) until it fits the key. */
+function labelSvg(label: string): string {
+	const text = label.toUpperCase();
+	const n = [...text].length;
+	let size = 15;
+	let spacing = 1.5;
+	const width = () => textWidth(text, size) + spacing * (n - 1);
+	while (width() > MAX_TEXT_WIDTH && size > 10) {
+		if (spacing > 0) spacing = Math.max(0, spacing - 0.5);
+		else size -= 1;
+	}
+	return `<text x="72" y="24" font-size="${size}" font-weight="700" letter-spacing="${spacing}" fill="${COLORS.label}" text-anchor="middle">${escapeXml(text)}</text>`;
 }
 
 export function renderKey(face: KeyFace): string {
@@ -164,7 +226,7 @@ export function renderKey(face: KeyFace): string {
 		`<svg xmlns="http://www.w3.org/2000/svg" width="${SIZE}" height="${SIZE}" viewBox="0 0 ${SIZE} ${SIZE}" font-family="Arial, Helvetica, sans-serif">` +
 		`<rect width="${SIZE}" height="${SIZE}" fill="${COLORS.bg}"/>` +
 		`<rect width="${SIZE}" height="4" fill="${tone === "error" ? COLORS.error : COLORS.accent}"/>` +
-		`<text x="72" y="24" font-size="15" font-weight="700" letter-spacing="1.5" fill="${COLORS.label}" text-anchor="middle">${escapeXml(face.label.toUpperCase())}</text>` +
+		labelSvg(face.label) +
 		text +
 		bar +
 		sub +

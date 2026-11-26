@@ -10,6 +10,7 @@ import {
 	renderAll,
 	WatchingAction,
 } from "./actions.js";
+import { setLanguage } from "./i18n.js";
 import { Poller, type PollerSettings } from "./poller.js";
 
 type GlobalSettings = Partial<PollerSettings> & { [key: string]: string | number | undefined };
@@ -30,5 +31,7 @@ streamDeck.settings.onDidReceiveGlobalSettings<GlobalSettings>((ev) => {
 	poller.configure(ev.settings);
 });
 
+// Registration info comes from the launch arguments, so the language is known before connecting.
+setLanguage(streamDeck.info.application.language);
 await streamDeck.connect();
 poller.configure(await streamDeck.settings.getGlobalSettings<GlobalSettings>());

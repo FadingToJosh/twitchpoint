@@ -15,9 +15,17 @@ Six keys that show what your Twitchpoint instance is doing. They refresh every
 
 All keys share one HTTP request per interval against `GET /api/streamdeck`.
 
+**Languages:** English, German, French, Spanish, Japanese, Korean, and Chinese
+(Simplified and Traditional). The plugin follows Stream Deck's language
+setting. Key text is in `src/strings.ts`, action names/tooltips in
+`i18n/manifest.json` (regenerate the `<lang>.json` files with
+`npm run locales`; `npm run build` does it too), settings-page text in
+`ui/settings.html`. The translations were not reviewed by native speakers;
+PRs welcome.
+
 ## Install
 
-**Prebuilt:** double-click `com.fadingtojosh.twitchpoint.streamDeckPlugin`
+**Prebuilt:** double-click `com.twitchpoint.streamdeck.streamDeckPlugin`
 (from the PR / release). Stream Deck 7.1+ on Windows 10+ or macOS 12+.
 
 **From source:**
@@ -26,8 +34,8 @@ All keys share one HTTP request per interval against `GET /api/streamdeck`.
 cd streamdeck
 npm ci
 npm run build
-npx streamdeck link com.fadingtojosh.twitchpoint.sdPlugin   # dev install
-# or: npm run pack   -> dist/com.fadingtojosh.twitchpoint.streamDeckPlugin
+npx streamdeck link com.twitchpoint.streamdeck.sdPlugin   # dev install
+# or: npm run pack   -> dist/com.twitchpoint.streamdeck.streamDeckPlugin
 ```
 
 Then drag the keys from the **Twitchpoint** category onto your deck. Set the

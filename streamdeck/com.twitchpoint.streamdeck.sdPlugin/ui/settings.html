@@ -1,0 +1,159 @@
+<!doctype html>
+<html>
+	<head lang="en">
+		<title>Twitchpoint Settings</title>
+		<meta charset="utf-8" />
+		<style>
+			/* Plain property inspector (no sdpi-components) so we fully control validation. */
+			body { margin: 0; padding: 8px 12px 8px 0; background: transparent; color: #d8d8d8; font: 9pt "Segoe UI", -apple-system, Helvetica, Arial, sans-serif; }
+			.row { display: flex; align-items: center; margin: 0 0 8px; }
+			.row label { flex: 0 0 96px; text-align: right; padding-right: 12px; color: #969696; }
+			.row .field { flex: 1; display: flex; align-items: center; gap: 8px; min-width: 0; }
+			input { box-sizing: border-box; height: 24px; padding: 0 6px; border: 1px solid transparent; border-radius: 3px; background: #3d3d3d; color: #d8d8d8; font: inherit; outline: none; }
+			input:focus { border-color: #5a5a5a; }
+			input.url { width: 100%; }
+			input.num { width: 72px; }
+			input.clamped { border-color: #f59e0b; }
+			.hint { color: #7d7d7d; white-space: nowrap; }
+			.note { color: #7d7d7d; margin: 12px 0 0 12px; line-height: 1.4; }
+			code { color: #b8b8b8; }
+		</style>
+	</head>
+	<body>
+		<!-- Global settings: every Twitchpoint key shares one server and one poll. -->
+		<div class="row">
+			<label for="baseUrl" data-i18n="server">Server</label>
+			<div class="field"><input id="baseUrl" class="url" type="text" spellcheck="false" placeholder="http://127.0.0.1:8080" /></div>
+		</div>
+		<div class="row">
+			<label for="intervalSec" data-i18n="farming">Farming (s)</label>
+			<div class="field"><input id="intervalSec" class="num" type="text" inputmode="numeric" maxlength="4" /><span class="hint" id="intervalSecHint"></span></div>
+		</div>
+		<div class="row">
+			<label for="idleIntervalSec" data-i18n="idle">Idle (s)</label>
+			<div class="field"><input id="idleIntervalSec" class="num" type="text" inputmode="numeric" maxlength="4" /><span class="hint" id="idleIntervalSecHint"></span></div>
+		</div>
+		<p class="note" id="note1"></p>
+		<p class="note" id="note2"></p>
+
+		<script>
+			// Keep in sync with src/poller.ts (LIMITS / DEFAULT_SETTINGS).
+			const FIELDS = {
+				intervalSec: { min: 15, max: 300, def: 60 },
+				idleIntervalSec: { min: 60, max: 1800, def: 300 },
+			};
+			const DEFAULT_URL = "http://127.0.0.1:8080";
+
+			// {local} / {lan} become <code> examples. Keep keys in sync across languages.
+			const I18N = {
+				en: { server: "Server", farming: "Farming (s)", idle: "Idle (s)",
+					note1: "Server: {local} when Twitchpoint runs on this PC. On another machine (e.g. a Raspberry Pi) use its LAN address, e.g. {lan}.",
+					note2: "Farming = a drop is being targeted; Idle = nothing is. Values outside the range are set to the nearest limit. Press any Twitchpoint key to refresh now." },
+				de: { server: "Server", farming: "Farmen (s)", idle: "Leerlauf (s)",
+					note1: "Server: {local}, wenn Twitchpoint auf diesem PC läuft. Auf einem anderen Gerät (z. B. Raspberry Pi) dessen LAN-Adresse, z. B. {lan}.",
+					note2: "Farmen = ein Drop wird verfolgt; Leerlauf = keiner. Werte außerhalb des Bereichs werden auf die nächste Grenze gesetzt. Drücke eine Twitchpoint-Taste, um sofort zu aktualisieren." },
+				fr: { server: "Serveur", farming: "Farm (s)", idle: "Inactif (s)",
+					note1: "Serveur : {local} si Twitchpoint tourne sur ce PC. Sur une autre machine (ex. un Raspberry Pi), utilisez son adresse locale, ex. {lan}.",
+					note2: "Farm = un drop est en cours ; Inactif = aucun. Les valeurs hors limites sont ramenées à la limite la plus proche. Appuyez sur une touche Twitchpoint pour actualiser." },
+				es: { server: "Servidor", farming: "Farmeo (s)", idle: "Inactivo (s)",
+					note1: "Servidor: {local} si Twitchpoint se ejecuta en este PC. En otra máquina (p. ej. una Raspberry Pi) usa su dirección de red local, p. ej. {lan}.",
+					note2: "Farmeo = hay un drop en curso; Inactivo = no hay ninguno. Los valores fuera de rango se ajustan al límite más cercano. Pulsa una tecla de Twitchpoint para actualizar ya." },
+				ja: { server: "サーバー", farming: "ファーム中 (秒)", idle: "待機中 (秒)",
+					note1: "サーバー: TwitchpointがこのPCで動いている場合は {local}。別の機器(Raspberry Piなど)の場合はそのLANアドレス(例: {lan})。",
+					note2: "ファーム中 = ドロップを獲得中、待機中 = 対象なし。範囲外の値は最も近い上限・下限に調整されます。Twitchpointのキーを押すとすぐに更新します。" },
+				ko: { server: "서버", farming: "파밍 중 (초)", idle: "대기 (초)",
+					note1: "서버: Twitchpoint가 이 PC에서 실행되면 {local}. 다른 기기(예: Raspberry Pi)라면 그 기기의 LAN 주소(예: {lan}).",
+					note2: "파밍 중 = 드롭 진행 중, 대기 = 대상 없음. 범위를 벗어난 값은 가장 가까운 한계값으로 맞춰집니다. Twitchpoint 키를 누르면 바로 새로고침합니다." },
+				zh_CN: { server: "服务器", farming: "挂机中 (秒)", idle: "空闲 (秒)",
+					note1: "服务器:Twitchpoint 在本机运行时填 {local}。在其他设备(如树莓派)上运行时填它的局域网地址,例如 {lan}。",
+					note2: "挂机中 = 正在获取掉宝;空闲 = 没有目标。超出范围的值会被调整为最近的上下限。按任意 Twitchpoint 按键可立即刷新。" },
+				zh_TW: { server: "伺服器", farming: "掛機中 (秒)", idle: "閒置 (秒)",
+					note1: "伺服器:Twitchpoint 在本機執行時填 {local}。在其他裝置(如樹莓派)上執行時填它的區網位址,例如 {lan}。",
+					note2: "掛機中 = 正在取得掉寶;閒置 = 沒有目標。超出範圍的值會被調整為最接近的上下限。按任一 Twitchpoint 按鍵可立即重新整理。" },
+			};
+
+			function applyLanguage(lang) {
+				const tr = I18N[lang] || I18N.en;
+				document.documentElement.lang = (lang || "en").replace("_", "-");
+				for (const el of document.querySelectorAll("[data-i18n]")) el.textContent = tr[el.dataset.i18n];
+				const code = (s) => `<code>${s}</code>`;
+				const fill = (s) => s.replace("{local}", code("http://127.0.0.1:8080")).replace("{lan}", code("http://192.168.1.50:8080"));
+				document.getElementById("note1").innerHTML = fill(tr.note1);
+				document.getElementById("note2").innerHTML = fill(tr.note2);
+			}
+
+			let ws;
+			let pluginUUID;
+			let settings = {};
+
+			function clampField(key, raw) {
+				const f = FIELDS[key];
+				const n = Math.round(Number(raw));
+				if (!Number.isFinite(n) || String(raw).trim() === "") return f.def;
+				return Math.min(f.max, Math.max(f.min, n));
+			}
+
+			function save() {
+				if (ws && ws.readyState === WebSocket.OPEN) {
+					ws.send(JSON.stringify({ event: "setGlobalSettings", context: pluginUUID, payload: settings }));
+				}
+			}
+
+			function render() {
+				document.getElementById("baseUrl").value = settings.baseUrl || DEFAULT_URL;
+				for (const key of Object.keys(FIELDS)) {
+					document.getElementById(key).value = clampField(key, settings[key] ?? FIELDS[key].def);
+				}
+			}
+
+			function wire() {
+				const url = document.getElementById("baseUrl");
+				url.addEventListener("change", () => {
+					settings.baseUrl = url.value.trim() || DEFAULT_URL;
+					url.value = settings.baseUrl;
+					save();
+				});
+				for (const [key, f] of Object.entries(FIELDS)) {
+					const input = document.getElementById(key);
+					input.min = f.min;
+					input.max = f.max;
+					document.getElementById(key + "Hint").textContent = `${f.min}–${f.max}`;
+					input.addEventListener("change", () => {
+						const v = clampField(key, input.value);
+						const wasClamped = String(v) !== input.value.trim();
+						input.value = v;
+						input.classList.toggle("clamped", wasClamped);
+						if (wasClamped) setTimeout(() => input.classList.remove("clamped"), 1500);
+						settings[key] = v;
+						save();
+					});
+				}
+			}
+
+			window.connectElgatoStreamDeckSocket = (port, uuid, registerEvent, info) => {
+				pluginUUID = uuid;
+				try {
+					applyLanguage(JSON.parse(info).application.language);
+				} catch {
+					applyLanguage("en");
+				}
+				ws = new WebSocket(`ws://127.0.0.1:${port}`);
+				ws.onopen = () => {
+					ws.send(JSON.stringify({ event: registerEvent, uuid }));
+					ws.send(JSON.stringify({ event: "getGlobalSettings", context: uuid }));
+				};
+				ws.onmessage = (e) => {
+					const msg = JSON.parse(e.data);
+					if (msg.event === "didReceiveGlobalSettings") {
+						settings = msg.payload?.settings || {};
+						render();
+					}
+				};
+			};
+
+			applyLanguage("en");
+			wire();
+			render();
+		</script>
+	</body>
+</html>

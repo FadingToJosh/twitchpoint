@@ -1,0 +1,28 @@
+{
+	"Name": "Twitchpoint",
+	"Description": "Zeigt Drop-Fortschritt, Restzeit und Prioritäten von Twitchpoint auf deinem Stream Deck.",
+	"com.twitchpoint.streamdeck.watching": {
+		"Name": "Kanal",
+		"Tooltip": "Kanal, den Twitchpoint gerade schaut. Drücken zum Aktualisieren."
+	},
+	"com.twitchpoint.streamdeck.drop-progress": {
+		"Name": "Drop-Fortschritt",
+		"Tooltip": "Minuten des aktuellen Drops, z. B. 56/120. Drücken zum Aktualisieren."
+	},
+	"com.twitchpoint.streamdeck.drop-position": {
+		"Name": "Drop-Position",
+		"Tooltip": "Der wievielte Drop der Kampagne das ist, z. B. 4/5. Drücken zum Aktualisieren."
+	},
+	"com.twitchpoint.streamdeck.next-drop": {
+		"Name": "Nächster Drop",
+		"Tooltip": "Der Drop nach dem aktuellen. Drücken zum Aktualisieren."
+	},
+	"com.twitchpoint.streamdeck.campaign-eta": {
+		"Name": "Kampagnen-Restzeit",
+		"Tooltip": "Zuschauzeit, bis alle Drops der Kampagne erhalten sind. Drücken zum Aktualisieren."
+	},
+	"com.twitchpoint.streamdeck.next-game": {
+		"Name": "Nächstes Spiel",
+		"Tooltip": "Nächstes Spiel mit laufender Kampagne, nach deiner Priorität. Drücken zum Aktualisieren."
+	}
+}

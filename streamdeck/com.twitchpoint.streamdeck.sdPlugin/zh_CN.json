@@ -1,0 +1,28 @@
+{
+	"Name": "Twitchpoint",
+	"Description": "在 Stream Deck 上显示 Twitchpoint 的掉宝进度、剩余时间和优先队列。",
+	"com.twitchpoint.streamdeck.watching": {
+		"Name": "观看中",
+		"Tooltip": "Twitchpoint 当前正在观看的频道。 按下即可刷新。"
+	},
+	"com.twitchpoint.streamdeck.drop-progress": {
+		"Name": "掉宝进度",
+		"Tooltip": "当前掉宝的观看分钟数,例如 56/120。 按下即可刷新。"
+	},
+	"com.twitchpoint.streamdeck.drop-position": {
+		"Name": "掉宝序号",
+		"Tooltip": "这是活动中的第几个掉宝,例如 4/5。 按下即可刷新。"
+	},
+	"com.twitchpoint.streamdeck.next-drop": {
+		"Name": "下一个掉宝",
+		"Tooltip": "当前掉宝之后将获得的掉宝。 按下即可刷新。"
+	},
+	"com.twitchpoint.streamdeck.campaign-eta": {
+		"Name": "活动剩余时间",
+		"Tooltip": "获得活动全部掉宝还需的观看时间。 按下即可刷新。"
+	},
+	"com.twitchpoint.streamdeck.next-game": {
+		"Name": "下一个游戏",
+		"Tooltip": "按你的优先顺序,下一个有进行中活动的游戏。 按下即可刷新。"
+	}
+}

@@ -122,3 +122,21 @@ test("intervals are clamped to their documented ranges", async () => {
 	assert.equal(clampSec(10, LIMITS.idleIntervalSec, 300), 60);
 	assert.equal(clampSec(5000, LIMITS.idleIntervalSec, 300), 1800);
 });
+
+test("key faces follow the Stream Deck language", async () => {
+	const { setLanguage } = await import("../src/i18n.js");
+	setLanguage("de");
+	assert.equal(faceFor("drop-position", summary).label, "Kampagne");
+	assert.equal(faceFor("next-game", { ...summary, next_game: null }).value, "Keine anderen Kampagnen");
+	setLanguage("ja");
+	assert.equal(faceFor("next-drop", { ...summary, drop: { ...summary.drop!, next: null, unreachable: 2 } }).sub, "2件ロック");
+	setLanguage("xx");
+	assert.equal(faceFor("drop-position", summary).label, "Campaign");
+	setLanguage("en");
+});
+
+test("every language translates every key", async () => {
+	const { RUNTIME } = await import("../src/strings.js");
+	const keys = Object.keys(RUNTIME.de).sort();
+	for (const [lang, table] of Object.entries(RUNTIME)) assert.deepEqual(Object.keys(table).sort(), keys, lang);
+});

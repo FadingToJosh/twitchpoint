@@ -5,7 +5,7 @@
 	"Actions": [
 		{
 			"Name": "Watching",
-			"UUID": "com.fadingtojosh.twitchpoint.watching",
+			"UUID": "com.twitchpoint.streamdeck.watching",
 			"Icon": "imgs/actions/icon",
 			"Tooltip": "Channel Twitchpoint is watching right now. Press to refresh.",
 			"PropertyInspectorPath": "ui/settings.html",
@@ -22,7 +22,7 @@
 		},
 		{
 			"Name": "Drop Progress",
-			"UUID": "com.fadingtojosh.twitchpoint.drop-progress",
+			"UUID": "com.twitchpoint.streamdeck.drop-progress",
 			"Icon": "imgs/actions/icon",
 			"Tooltip": "Minutes on the drop being farmed, e.g. 56/120. Press to refresh.",
 			"PropertyInspectorPath": "ui/settings.html",
@@ -39,7 +39,7 @@
 		},
 		{
 			"Name": "Drop Position",
-			"UUID": "com.fadingtojosh.twitchpoint.drop-position",
+			"UUID": "com.twitchpoint.streamdeck.drop-position",
 			"Icon": "imgs/actions/icon",
 			"Tooltip": "Which drop of the campaign this is, e.g. 4/5. Press to refresh.",
 			"PropertyInspectorPath": "ui/settings.html",
@@ -56,7 +56,7 @@
 		},
 		{
 			"Name": "Next Drop",
-			"UUID": "com.fadingtojosh.twitchpoint.next-drop",
+			"UUID": "com.twitchpoint.streamdeck.next-drop",
 			"Icon": "imgs/actions/icon",
 			"Tooltip": "The drop you get after the current one. Press to refresh.",
 			"PropertyInspectorPath": "ui/settings.html",
@@ -73,7 +73,7 @@
 		},
 		{
 			"Name": "Campaign ETA",
-			"UUID": "com.fadingtojosh.twitchpoint.campaign-eta",
+			"UUID": "com.twitchpoint.streamdeck.campaign-eta",
 			"Icon": "imgs/actions/icon",
 			"Tooltip": "Watch time until every drop in the campaign is earned. Press to refresh.",
 			"PropertyInspectorPath": "ui/settings.html",
@@ -90,7 +90,7 @@
 		},
 		{
 			"Name": "Next Game",
-			"UUID": "com.fadingtojosh.twitchpoint.next-game",
+			"UUID": "com.twitchpoint.streamdeck.next-game",
 			"Icon": "imgs/actions/icon",
 			"Tooltip": "Next game in your priority list that Twitchpoint will farm. Press to refresh.",
 			"PropertyInspectorPath": "ui/settings.html",
@@ -128,5 +128,5 @@
 	"Nodejs": {
 		"Version": "24"
 	},
-	"UUID": "com.fadingtojosh.twitchpoint"
+	"UUID": "com.twitchpoint.streamdeck"
 }

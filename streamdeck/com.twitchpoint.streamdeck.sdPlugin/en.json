@@ -1,0 +1,28 @@
+{
+	"Name": "Twitchpoint",
+	"Description": "Shows Twitchpoint drop progress, ETA and priority queue on your Stream Deck.",
+	"com.twitchpoint.streamdeck.watching": {
+		"Name": "Watching",
+		"Tooltip": "Channel Twitchpoint is watching right now. Press to refresh."
+	},
+	"com.twitchpoint.streamdeck.drop-progress": {
+		"Name": "Drop Progress",
+		"Tooltip": "Minutes on the drop being farmed, e.g. 56/120. Press to refresh."
+	},
+	"com.twitchpoint.streamdeck.drop-position": {
+		"Name": "Drop Position",
+		"Tooltip": "Which drop of the campaign this is, e.g. 4/5. Press to refresh."
+	},
+	"com.twitchpoint.streamdeck.next-drop": {
+		"Name": "Next Drop",
+		"Tooltip": "The drop you get after the current one. Press to refresh."
+	},
+	"com.twitchpoint.streamdeck.campaign-eta": {
+		"Name": "Campaign ETA",
+		"Tooltip": "Watch time until every drop in the campaign is earned. Press to refresh."
+	},
+	"com.twitchpoint.streamdeck.next-game": {
+		"Name": "Next Game",
+		"Tooltip": "Next game with a running campaign, in your priority order. Press to refresh."
+	}
+}

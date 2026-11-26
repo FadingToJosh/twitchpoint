@@ -74,32 +74,32 @@ abstract class TwitchpointAction extends SingletonAction<Settings> {
 	}
 }
 
-@action({ UUID: "com.fadingtojosh.twitchpoint.watching" })
+@action({ UUID: "com.twitchpoint.streamdeck.watching" })
 export class WatchingAction extends TwitchpointAction {
 	readonly field = "watching" as const;
 }
 
-@action({ UUID: "com.fadingtojosh.twitchpoint.drop-progress" })
+@action({ UUID: "com.twitchpoint.streamdeck.drop-progress" })
 export class DropProgressAction extends TwitchpointAction {
 	readonly field = "drop-progress" as const;
 }
 
-@action({ UUID: "com.fadingtojosh.twitchpoint.drop-position" })
+@action({ UUID: "com.twitchpoint.streamdeck.drop-position" })
 export class DropPositionAction extends TwitchpointAction {
 	readonly field = "drop-position" as const;
 }
 
-@action({ UUID: "com.fadingtojosh.twitchpoint.next-drop" })
+@action({ UUID: "com.twitchpoint.streamdeck.next-drop" })
 export class NextDropAction extends TwitchpointAction {
 	readonly field = "next-drop" as const;
 }
 
-@action({ UUID: "com.fadingtojosh.twitchpoint.campaign-eta" })
+@action({ UUID: "com.twitchpoint.streamdeck.campaign-eta" })
 export class CampaignEtaAction extends TwitchpointAction {
 	readonly field = "campaign-eta" as const;
 }
 
-@action({ UUID: "com.fadingtojosh.twitchpoint.next-game" })
+@action({ UUID: "com.twitchpoint.streamdeck.next-game" })
 export class NextGameAction extends TwitchpointAction {
 	readonly field = "next-game" as const;
 }
