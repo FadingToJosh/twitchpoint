@@ -56,6 +56,12 @@ runs on another machine (a Pi, a NAS), enter that machine's LAN address, e.g.
   drop** (its label switches to "THIS DROP"), because the old endpoints don't
   expose per-drop data.
 
+## Web demo
+
+`npm run demo:build -- <folder>` bundles the plugin for the browser demo at <https://fadingtojosh.github.io/streamdeck-plugins/twitchpoint/demo/>. Point it at a checkout of [streamdeck-plugins](https://github.com/FadingToJosh/streamdeck-plugins): `npm run demo:build -- ../../streamdeck-plugins/twitchpoint/demo` (from this folder). Rebuild it after changing how keys look or behave.
+
+Only the Stream Deck SDK is replaced. The page answers the poller's `fetch()` calls with a pretend Twitchpoint server.
+
 ## How the numbers are computed
 
 `internal/drops/outlook.go` works from the cached inventory:
