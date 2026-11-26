@@ -10,7 +10,8 @@
 		"test": "tsc -p tsconfig.test.json && node --test .test-out/test/*.test.js",
 		"link": "streamdeck link com.twitchpoint.streamdeck.sdPlugin",
 		"pack": "npm run build && streamdeck pack com.twitchpoint.streamdeck.sdPlugin --force -o dist",
-		"locales": "node scripts/gen-locales.mjs"
+		"locales": "node scripts/gen-locales.mjs",
+		"demo:build": "node scripts/demo/build.mjs"
 	},
 	"dependencies": {
 		"@elgato/streamdeck": "3.0.6"
@@ -23,6 +24,7 @@
 		"@rollup/plugin-typescript": "^12.1.0",
 		"@tsconfig/node20": "^20.1.2",
 		"@types/node": "~24.1.0",
+		"esbuild": "0.28.2",
 		"rollup": "^4.0.2",
 		"tslib": "^2.6.2",
 		"typescript": "^5.2.2"
