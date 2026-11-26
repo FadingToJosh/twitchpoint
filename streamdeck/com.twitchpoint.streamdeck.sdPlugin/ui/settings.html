@@ -15,6 +15,10 @@
 			input.num { width: 72px; }
 			input.clamped { border-color: #f59e0b; }
 			.hint { color: #7d7d7d; white-space: nowrap; }
+			button.save { height: 24px; padding: 0 14px; border: 0; border-radius: 3px; background: #9146ff; color: #fff; font: inherit; cursor: pointer; }
+			button.save:hover { background: #a970ff; }
+			.status { color: #7d7d7d; }
+			.status.ok { color: #4ade80; }
 			.note { color: #7d7d7d; margin: 12px 0 0 12px; line-height: 1.4; }
 			code { color: #b8b8b8; }
 		</style>
@@ -33,6 +37,10 @@
 			<label for="idleIntervalSec" data-i18n="idle">Idle (s)</label>
 			<div class="field"><input id="idleIntervalSec" class="num" type="text" inputmode="numeric" maxlength="4" /><span class="hint" id="idleIntervalSecHint"></span></div>
 		</div>
+		<div class="row">
+			<label></label>
+			<div class="field"><button class="save" id="save" type="button" data-i18n="save">Save</button><span class="status" id="status"></span></div>
+		</div>
 		<p class="note" id="note1"></p>
 		<p class="note" id="note2"></p>
 
@@ -46,34 +54,36 @@
 
 			// {local} / {lan} become <code> examples. Keep keys in sync across languages.
 			const I18N = {
-				en: { server: "Server", farming: "Farming (s)", idle: "Idle (s)",
+				en: { save: "Save", saved: "Saved ✓", unsaved: "Unsaved changes", server: "Server", farming: "Farming (s)", idle: "Idle (s)",
 					note1: "Server: {local} when Twitchpoint runs on this PC. On another machine (e.g. a Raspberry Pi) use its LAN address, e.g. {lan}.",
 					note2: "Farming = a drop is being targeted; Idle = nothing is. Values outside the range are set to the nearest limit. Press any Twitchpoint key to refresh now." },
-				de: { server: "Server", farming: "Farmen (s)", idle: "Leerlauf (s)",
+				de: { save: "Speichern", saved: "Gespeichert ✓", unsaved: "Nicht gespeichert", server: "Server", farming: "Farmen (s)", idle: "Leerlauf (s)",
 					note1: "Server: {local}, wenn Twitchpoint auf diesem PC läuft. Auf einem anderen Gerät (z. B. Raspberry Pi) dessen LAN-Adresse, z. B. {lan}.",
 					note2: "Farmen = ein Drop wird verfolgt; Leerlauf = keiner. Werte außerhalb des Bereichs werden auf die nächste Grenze gesetzt. Drücke eine Twitchpoint-Taste, um sofort zu aktualisieren." },
-				fr: { server: "Serveur", farming: "Farm (s)", idle: "Inactif (s)",
+				fr: { save: "Enregistrer", saved: "Enregistré ✓", unsaved: "Non enregistré", server: "Serveur", farming: "Farm (s)", idle: "Inactif (s)",
 					note1: "Serveur : {local} si Twitchpoint tourne sur ce PC. Sur une autre machine (ex. un Raspberry Pi), utilisez son adresse locale, ex. {lan}.",
 					note2: "Farm = un drop est en cours ; Inactif = aucun. Les valeurs hors limites sont ramenées à la limite la plus proche. Appuyez sur une touche Twitchpoint pour actualiser." },
-				es: { server: "Servidor", farming: "Farmeo (s)", idle: "Inactivo (s)",
+				es: { save: "Guardar", saved: "Guardado ✓", unsaved: "Sin guardar", server: "Servidor", farming: "Farmeo (s)", idle: "Inactivo (s)",
 					note1: "Servidor: {local} si Twitchpoint se ejecuta en este PC. En otra máquina (p. ej. una Raspberry Pi) usa su dirección de red local, p. ej. {lan}.",
 					note2: "Farmeo = hay un drop en curso; Inactivo = no hay ninguno. Los valores fuera de rango se ajustan al límite más cercano. Pulsa una tecla de Twitchpoint para actualizar ya." },
-				ja: { server: "サーバー", farming: "ファーム中 (秒)", idle: "待機中 (秒)",
+				ja: { save: "保存", saved: "保存しました ✓", unsaved: "未保存", server: "サーバー", farming: "ファーム中 (秒)", idle: "待機中 (秒)",
 					note1: "サーバー: TwitchpointがこのPCで動いている場合は {local}。別の機器(Raspberry Piなど)の場合はそのLANアドレス(例: {lan})。",
 					note2: "ファーム中 = ドロップを獲得中、待機中 = 対象なし。範囲外の値は最も近い上限・下限に調整されます。Twitchpointのキーを押すとすぐに更新します。" },
-				ko: { server: "서버", farming: "파밍 중 (초)", idle: "대기 (초)",
+				ko: { save: "저장", saved: "저장됨 ✓", unsaved: "저장 안 됨", server: "서버", farming: "파밍 중 (초)", idle: "대기 (초)",
 					note1: "서버: Twitchpoint가 이 PC에서 실행되면 {local}. 다른 기기(예: Raspberry Pi)라면 그 기기의 LAN 주소(예: {lan}).",
 					note2: "파밍 중 = 드롭 진행 중, 대기 = 대상 없음. 범위를 벗어난 값은 가장 가까운 한계값으로 맞춰집니다. Twitchpoint 키를 누르면 바로 새로고침합니다." },
-				zh_CN: { server: "服务器", farming: "挂机中 (秒)", idle: "空闲 (秒)",
+				zh_CN: { save: "保存", saved: "已保存 ✓", unsaved: "未保存", server: "服务器", farming: "挂机中 (秒)", idle: "空闲 (秒)",
 					note1: "服务器:Twitchpoint 在本机运行时填 {local}。在其他设备(如树莓派)上运行时填它的局域网地址,例如 {lan}。",
 					note2: "挂机中 = 正在获取掉宝;空闲 = 没有目标。超出范围的值会被调整为最近的上下限。按任意 Twitchpoint 按键可立即刷新。" },
-				zh_TW: { server: "伺服器", farming: "掛機中 (秒)", idle: "閒置 (秒)",
+				zh_TW: { save: "儲存", saved: "已儲存 ✓", unsaved: "未儲存", server: "伺服器", farming: "掛機中 (秒)", idle: "閒置 (秒)",
 					note1: "伺服器:Twitchpoint 在本機執行時填 {local}。在其他裝置(如樹莓派)上執行時填它的區網位址,例如 {lan}。",
 					note2: "掛機中 = 正在取得掉寶;閒置 = 沒有目標。超出範圍的值會被調整為最接近的上下限。按任一 Twitchpoint 按鍵可立即重新整理。" },
 			};
 
+			let tr = I18N.en;
+
 			function applyLanguage(lang) {
-				const tr = I18N[lang] || I18N.en;
+				tr = I18N[lang] || I18N.en;
 				document.documentElement.lang = (lang || "en").replace("_", "-");
 				for (const el of document.querySelectorAll("[data-i18n]")) el.textContent = tr[el.dataset.i18n];
 				const code = (s) => `<code>${s}</code>`;
@@ -106,28 +116,67 @@
 				}
 			}
 
-			function wire() {
+			function setStatus(kind) {
+				const el = document.getElementById("status");
+				el.textContent = kind === "saved" ? tr.saved : kind === "dirty" ? tr.unsaved : "";
+				el.classList.toggle("ok", kind === "saved");
+				if (kind === "saved") setTimeout(() => el.textContent === tr.saved && setStatus(""), 2000);
+			}
+
+			// Reads every field, clamps the numbers, writes them back and saves.
+			// Runs on the Save button, Enter, leaving a field, and shortly after
+			// typing stops in the URL box, so closing the panel never loses edits.
+			function commit({ fixNumbers = true } = {}) {
 				const url = document.getElementById("baseUrl");
-				url.addEventListener("change", () => {
-					settings.baseUrl = url.value.trim() || DEFAULT_URL;
-					url.value = settings.baseUrl;
-					save();
-				});
-				for (const [key, f] of Object.entries(FIELDS)) {
+				settings.baseUrl = url.value.trim() || DEFAULT_URL;
+				for (const key of Object.keys(FIELDS)) {
 					const input = document.getElementById(key);
-					input.min = f.min;
-					input.max = f.max;
-					document.getElementById(key + "Hint").textContent = `${f.min}–${f.max}`;
-					input.addEventListener("change", () => {
-						const v = clampField(key, input.value);
+					const v = clampField(key, input.value);
+					if (fixNumbers) {
 						const wasClamped = String(v) !== input.value.trim();
 						input.value = v;
 						input.classList.toggle("clamped", wasClamped);
 						if (wasClamped) setTimeout(() => input.classList.remove("clamped"), 1500);
-						settings[key] = v;
-						save();
+					}
+					settings[key] = v;
+				}
+				save();
+				setStatus("saved");
+			}
+
+			function wire() {
+				let timer;
+				const later = () => {
+					setStatus("dirty");
+					clearTimeout(timer);
+					// Numbers are saved clamped but not rewritten mid-typing (typing "1" on the way to "120").
+					timer = setTimeout(() => commit({ fixNumbers: false }), 800);
+				};
+				document.getElementById("save").addEventListener("click", () => {
+					clearTimeout(timer);
+					commit();
+				});
+				for (const id of ["baseUrl", ...Object.keys(FIELDS)]) {
+					const input = document.getElementById(id);
+					input.addEventListener("input", later);
+					input.addEventListener("change", () => {
+						clearTimeout(timer);
+						commit();
+					});
+					input.addEventListener("keydown", (e) => {
+						if (e.key === "Enter") {
+							clearTimeout(timer);
+							commit();
+						}
 					});
 				}
+				for (const [key, f] of Object.entries(FIELDS)) {
+					document.getElementById(key + "Hint").textContent = `${f.min}–${f.max}`;
+				}
+				window.addEventListener("beforeunload", () => {
+					clearTimeout(timer);
+					commit({ fixNumbers: false });
+				});
 			}
 
 			window.connectElgatoStreamDeckSocket = (port, uuid, registerEvent, info) => {
